@@ -1,31 +1,12 @@
 import React from "react";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import axios from "axios";
 
-const users = [
-  {
-    name: "Alex Mark",
-    email: "alex@avayatoday.com",
-    phone: "-",
-  },
-  {
-    name: "Alex Mark",
-    email: "alex@avayatoday.com",
-    phone: "-",
-  },
-  {
-    name: "Alex Mark",
-    email: "alex@avayatoday.com",
-    phone: "-",
-  },
-  {
-    name: "Alex Mark",
-    email: "alex@avayatoday.com",
-    phone: "-",
-  },
-];
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function EmailTable(props) {
+export default function EmailTable({ users, emailApiUrl }) {
   return (
     <div className="table-container">
       <Table>
@@ -39,7 +20,7 @@ export default function EmailTable(props) {
         </Thead>
         <Tbody>
           {users.map((ele, index) => (
-            <TableRow user={ele} key={index} index={index} />
+            <TableRow user={ele} key={index} index={index} emailApiUrl={emailApiUrl} />
           ))}
         </Tbody>
       </Table>
@@ -47,7 +28,41 @@ export default function EmailTable(props) {
   );
 }
 
-const TableRow = ({ user, index }) => {
+const TableRow = ({ user, index,emailApiUrl }) => {
+  const sendEmailHandler = async () => {
+    const loadingToaster = toast.loading("Sending Email...");
+    //do something else
+    try {
+      let config = {
+        method: "post",
+        url: emailApiUrl,
+        data: user,
+      };
+      let resp = await axios.request(config);
+      toast.update(loadingToaster, {
+        render: "Email Sent Successfuly",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
+      console.log("resp==> ", resp);
+      // toast.success("Email Sent Successfuly");
+    } catch (error) {
+      // toast.error("Error Sending Email");
+      toast.update(loadingToaster, {
+        render: "Error Sending Email",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+      });
+      console.log("error==> ", error);
+    }
+  };
+
   return (
     <Tr className={`table-row ${index % 2 === 0 ? "grey-bg" : "off-grey-bg"}`}>
       <Td>{user.name} </Td>
@@ -55,17 +70,21 @@ const TableRow = ({ user, index }) => {
         <a href="mailto:webmaster@example.com">{user.email}</a>
       </Td>
       <Td>{user.phone}</Td>
-      <Td className="actions-container">
-        <button>
-          <i className="fa-regular fa-envelope email-icon"></i>
-        </button>
-        <button>
-          <i className="fa fa-phone phone-icon" aria-hidden="true"></i>
-        </button>
-        <button>
-          <i className="fa-2x fa-brands fa-whatsapp whatsapp-icon"></i>
-        </button>
-      </Td>
+      {user.email.trim() ? (
+        <Td className="actions-container">
+          <button onClick={sendEmailHandler}>
+            <i className="fa-regular fa-envelope email-icon"></i>
+          </button>
+          <button>
+            <i className="fa fa-phone phone-icon" aria-hidden="true"></i>
+          </button>
+          <button>
+            <i className="fa-2x fa-brands fa-whatsapp whatsapp-icon"></i>
+          </button>
+        </Td>
+      ) : (
+        <Td></Td>
+      )}
     </Tr>
   );
 };
