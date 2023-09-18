@@ -5,8 +5,11 @@ import axios from "axios";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import config from "./utils/config";
 
-export default function EmailTable({ users, emailApiUrl }) {
+const emailApiUrl = config.emailApiUrl;
+
+export default function EmailTable({ users }) {
   return (
     <div className="table-container">
       <Table>
@@ -20,7 +23,7 @@ export default function EmailTable({ users, emailApiUrl }) {
         </Thead>
         <Tbody>
           {users.map((ele, index) => (
-            <TableRow user={ele} key={index} index={index} emailApiUrl={emailApiUrl} />
+            <TableRow user={ele} key={index} index={index} />
           ))}
         </Tbody>
       </Table>
@@ -28,10 +31,9 @@ export default function EmailTable({ users, emailApiUrl }) {
   );
 }
 
-const TableRow = ({ user, index,emailApiUrl }) => {
+const TableRow = ({ user, index }) => {
   const sendEmailHandler = async () => {
     const loadingToaster = toast.loading("Sending Email...");
-    //do something else
     try {
       let config = {
         method: "post",

@@ -4,13 +4,10 @@ import axios from "axios";
 
 import "./App.css";
 import EmailTable from "./EmailPage";
+import config from "./utils/config";
 
-const userDetailsUrl =
-  "https://gitex2023configuration.lab.bravishma.com/Email/UserDetails.json";
-
-// const emailApiUrl = "http://localhost:3010/email/send";
-const emailApiUrl =
-  "https://us-central1-nipon-test-350808.cloudfunctions.net/govservEmail";
+const userDetailsUrl = config.userDetailsUrl;
+console.log(userDetailsUrl);
 
 // const users = [
 //   {
@@ -20,10 +17,10 @@ const emailApiUrl =
 //     phone: "-",
 //   },
 //   {
-//     name: " ",
-//     email: " ",
-//     userId: " ",
-//     phone: " ",
+//     name: "Vivek",
+//     email: "vivekn@bravishma.com",
+//     userId: "vivek",
+//     phone: "-",
 //   },
 //   {
 //     name: " ",
@@ -56,7 +53,7 @@ function App() {
     <div className="App">
       <ToastContainer />
       <div className="heading">OutBound Notifications</div>
-      <EmailTable users={users} emailApiUrl={emailApiUrl} />
+      <EmailTable users={users} />
     </div>
   );
 }
